@@ -22,9 +22,9 @@ enum class IndexerType(val displayName: String) {
 }
 
 enum class AppTheme(val displayName: String) {
-    SYSTEM("System Default"),
-    LIGHT("Light Mode"),
-    DARK("Dark Mode")
+    SYSTEM("System"),
+    LIGHT("Light"),
+    DARK("Dark")
 }
 
 enum class AccentTheme(val displayName: String) {

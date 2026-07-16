@@ -119,7 +119,10 @@ fun SettingsScreen(
                     text = {
                         Text(
                             text = tab.displayName,
-                            fontWeight = if (activeTab == tab) FontWeight.Bold else FontWeight.Medium
+                            fontWeight = if (activeTab == tab) FontWeight.Bold else FontWeight.Medium,
+                            style = MaterialTheme.typography.labelMedium,
+                            maxLines = 1,
+                            softWrap = false
                         )
                     },
                     selectedContentColor = primaryColor,
@@ -370,6 +373,7 @@ fun AppearanceSettings(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(IntrinsicSize.Min)
                 .padding(vertical = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -378,6 +382,7 @@ fun AppearanceSettings(
                 Card(
                     modifier = Modifier
                         .weight(1f)
+                        .fillMaxHeight()
                         .clickable { onThemeChange(theme) },
                     colors = CardDefaults.cardColors(
                         containerColor = if (isSelected) primaryColor.copy(alpha = 0.15f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)

@@ -127,96 +127,102 @@ fun SearchScreen(
                 }
             }
 
-            // Material 3 Search Bar with rounded corners, proper animations and search history
-            Box(
+            // Material 3 Search Bar Row with vertically aligned layout toggle
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
                         horizontal = if (active) 0.dp else 16.dp,
                         vertical = if (active) 0.dp else 8.dp
-                    )
-                    .then(
-                        if (!active) {
-                            Modifier
-                                .background(
-                                    Brush.horizontalGradient(
-                                        colors = listOf(
-                                            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-                                            MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)
-                                        )
-                                    ),
-                                    shape = SearchBarDefaults.inputFieldShape
-                                )
-                                .border(
-                                    BorderStroke(
-                                        width = 1.5.dp,
-                                        brush = Brush.horizontalGradient(
-                                            colors = listOf(
-                                                MaterialTheme.colorScheme.primary,
-                                                MaterialTheme.colorScheme.secondary
-                                            )
-                                        )
-                                    ),
-                                    shape = SearchBarDefaults.inputFieldShape
-                                )
-                        } else {
-                            Modifier
-                        }
-                    )
-            ) {
-                SearchBar(
-                    query = query,
-                    onQueryChange = { viewModel.updateQuery(it) },
-                    onSearch = {
-                        viewModel.search()
-                        active = false
-                        focusManager.clearFocus()
-                    },
-                    active = active,
-                    onActiveChange = { 
-                        active = it 
-                        if (!it) {
-                            focusManager.clearFocus()
-                        }
-                    },
-                    placeholder = {
-                        Text(
-                            "Search torrents...",
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Search",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    },
-                    trailingIcon = {
-                        if (active) {
-                            IconButton(onClick = { active = false }) {
-                                Icon(
-                                    imageVector = Icons.Default.Close,
-                                    contentDescription = "Close search",
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                        } else if (query.isNotEmpty()) {
-                            IconButton(onClick = { viewModel.updateQuery("") }) {
-                                Icon(
-                                    imageVector = Icons.Default.Clear,
-                                    contentDescription = "Clear",
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        }
-                    },
-                    colors = SearchBarDefaults.colors(
-                        containerColor = if (active) MaterialTheme.colorScheme.surface else Color.Transparent,
                     ),
-                    shape = SearchBarDefaults.inputFieldShape,
-                    modifier = Modifier.fillMaxWidth()
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .then(
+                            if (!active) {
+                                Modifier
+                                    .background(
+                                        Brush.horizontalGradient(
+                                            colors = listOf(
+                                                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                                                MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)
+                                            )
+                                        ),
+                                        shape = SearchBarDefaults.inputFieldShape
+                                    )
+                                    .border(
+                                        BorderStroke(
+                                            width = 1.5.dp,
+                                            brush = Brush.horizontalGradient(
+                                                colors = listOf(
+                                                    MaterialTheme.colorScheme.primary,
+                                                    MaterialTheme.colorScheme.secondary
+                                                )
+                                            )
+                                        ),
+                                        shape = SearchBarDefaults.inputFieldShape
+                                    )
+                            } else {
+                                Modifier
+                            }
+                        )
                 ) {
+                    SearchBar(
+                        query = query,
+                        onQueryChange = { viewModel.updateQuery(it) },
+                        onSearch = {
+                            viewModel.search()
+                            active = false
+                            focusManager.clearFocus()
+                        },
+                        active = active,
+                        onActiveChange = { 
+                            active = it 
+                            if (!it) {
+                                focusManager.clearFocus()
+                            }
+                        },
+                        placeholder = {
+                            Text(
+                                "Search torrents...",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                            )
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Search",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        },
+                        trailingIcon = {
+                            if (active) {
+                                IconButton(onClick = { active = false }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Close,
+                                        contentDescription = "Close search",
+                                        tint = MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
+                            } else if (query.isNotEmpty()) {
+                                IconButton(onClick = { viewModel.updateQuery("") }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Clear,
+                                        contentDescription = "Clear",
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        },
+                        colors = SearchBarDefaults.colors(
+                            containerColor = if (active) MaterialTheme.colorScheme.surface else Color.Transparent,
+                        ),
+                        shape = SearchBarDefaults.inputFieldShape,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
                     LazyColumn(
                         modifier = Modifier.fillMaxWidth(),
                         contentPadding = PaddingValues(16.dp),
@@ -327,8 +333,9 @@ fun SearchScreen(
                 }
             }
         }
+    }
 
-        // Category Selection Row
+    // Category Selection Row
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
@@ -371,37 +378,23 @@ fun SearchScreen(
             }
         }
 
-        // Control Bar (Grid/List toggle & Results status)
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 4.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            val resultsCount = when (val state = uiState) {
-                is SearchUiState.Success -> state.results.size
-                else -> 0
-            }
-            Text(
-                text = if (resultsCount > 0) "$resultsCount results found" else "",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            // Grid/List toggle button
-            IconButton(
-                onClick = { isGridView = !isGridView }
+        // Control Bar (Results status)
+        val resultsCount = when (val state = uiState) {
+            is SearchUiState.Success -> state.results.size
+            else -> 0
+        }
+        if (resultsCount > 0) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                if (isGridView) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.List,
-                        contentDescription = "Switch to List View",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                } else {
-                    GridIcon(tint = MaterialTheme.colorScheme.primary)
-                }
+                Text(
+                    text = "$resultsCount results found",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
 

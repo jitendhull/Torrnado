@@ -169,7 +169,9 @@ fun TransfersScreen(
                             text = label,
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontWeight = if (selectedTabIndex == index) FontWeight.Bold else FontWeight.Normal
-                            )
+                            ),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 )
@@ -411,7 +413,9 @@ fun StatusChip(status: TransferStatus) {
         Text(
             text = label.uppercase(),
             style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-            color = textColor
+            color = textColor,
+            maxLines = 1,
+            softWrap = false
         )
     }
 }
