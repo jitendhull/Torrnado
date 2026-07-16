@@ -1,4 +1,4 @@
-# Proguard rules for TorrentVault
+# Proguard rules for Torrnado
 # Keep Hilt
 -keep class class_name_of_your_hilt_module { *; }
 -keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod

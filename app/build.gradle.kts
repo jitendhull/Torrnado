@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.torrentvault"
+    namespace = "tech.jitendhull.torrnado"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.torrentvault"
+        applicationId = "tech.jitendhull.torrnado"
         minSdk = 26
         targetSdk = 35
         versionCode = 1

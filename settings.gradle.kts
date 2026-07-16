@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "TorrentVault"
+rootProject.name = "Torrnado"
 include(":app")

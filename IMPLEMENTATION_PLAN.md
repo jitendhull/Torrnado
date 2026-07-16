@@ -1,8 +1,8 @@
-# 🔱 TorrentVault — Implementation Plan
+# 🔱 Torrnado — Implementation Plan
 
-## App Name: **TorrentVault**
+## App Name: **Torrnado**
 
-*(Alternatives considered: MagnetDeck, TorrentForge, TrackerPulse)*
+*(Alternatives considered: TorrentVault, MagnetDeck, TorrentForge, TrackerPulse)*
 
 ---
 
@@ -59,7 +59,7 @@
 - [x] Configure: Kotlin 2.0+, Compose BOM, Hilt, Room, Retrofit, OkHttp, Jsoup, DataStore
 - [x] Package structure:
   ```
-  com.torrentvault
+  tech.jitendhull.torrnado
   ├── data/          # Room, Retrofit, DataStore, repositories
   ├── domain/        # Models, UseCases
   ├── di/            # Hilt modules
