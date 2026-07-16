@@ -1,24 +1,42 @@
-# Android
-*.iml
-.gradle
-/local.properties
-/.idea
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+# Large files
+gradle-bin.zip
+
+# Built artifacts
+build/
+**/build/
 *.apk
-*.aab
+*.aar
 *.ap_
+*.aab
 *.dex
-
-# Kotlin
 *.class
-*.jar
-*.war
 
-# OS
+# Gradle files
+.gradle/
+/local.properties
+/captures
+
+# IDEs and Editors
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.project
+.classpath
+.factorypath
+
+# OS files
+.DS_Store
 Thumbs.db
 *.swp
 *~
+
+# Log files
+*.log
+
+# Mobile toolings
+.externalNativeBuild/
+.cxx/
+crashlytics-build.properties

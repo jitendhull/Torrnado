@@ -11,11 +11,11 @@
         android:label="Torrnado"
         android:roundIcon="@android:drawable/sym_def_app_icon"
         android:supportsRtl="true"
-        android:theme="@android:style/Theme.NoDisplay">
+        android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
-            android:theme="@android:style/Theme.Material.NoActionBar">
+            android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
