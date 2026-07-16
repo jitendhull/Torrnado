@@ -34,7 +34,8 @@ data class SettingsUiState(
     val bookIndexer: IndexerType = IndexerType.AUTO,
     val generalIndexer: IndexerType = IndexerType.AUTO,
     val appTheme: AppTheme = AppTheme.SYSTEM,
-    val accentTheme: AccentTheme = AccentTheme.CYBERPUNK
+    val accentTheme: AccentTheme = AccentTheme.CYBERPUNK,
+    val amoledTheme: Boolean = false
 )
 
 @HiltViewModel
@@ -52,7 +53,8 @@ class SettingsViewModel @Inject constructor(
         settingsManager.animeIndexer, settingsManager.musicIndexer,
         settingsManager.gameIndexer, settingsManager.bookIndexer,
         settingsManager.generalIndexer,
-        settingsManager.appTheme, settingsManager.accentTheme
+        settingsManager.appTheme, settingsManager.accentTheme,
+        settingsManager.amoledTheme
     ) { args ->
         SettingsUiState(
             prowlarrUrl = args[0] as String,
@@ -73,7 +75,8 @@ class SettingsViewModel @Inject constructor(
             bookIndexer = args[15] as IndexerType,
             generalIndexer = args[16] as IndexerType,
             appTheme = args[17] as AppTheme,
-            accentTheme = args[18] as AccentTheme
+            accentTheme = args[18] as AccentTheme,
+            amoledTheme = args[19] as Boolean
         )
     }.stateIn(
         scope = viewModelScope,
@@ -114,6 +117,12 @@ class SettingsViewModel @Inject constructor(
     fun updateAccentTheme(accent: AccentTheme) {
         viewModelScope.launch {
             settingsManager.saveAccentTheme(accent)
+        }
+    }
+
+    fun updateAmoledTheme(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsManager.saveAmoledTheme(enabled)
         }
     }
 }

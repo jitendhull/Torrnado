@@ -73,5 +73,8 @@ dependencies {
     // Testing
     testImplementation(libs.junit)
 
+    // Material Kolor
+    implementation(libs.material.kolor)
+
     debugImplementation(libs.androidx.compose.ui.tooling)
 }

@@ -153,7 +153,8 @@ fun SettingsScreen(
                             AppearanceSettings(
                                 state = state,
                                 onThemeChange = { viewModel.updateAppTheme(it) },
-                                onAccentChange = { viewModel.updateAccentTheme(it) }
+                                onAccentChange = { viewModel.updateAccentTheme(it) },
+                                onAmoledChange = { viewModel.updateAmoledTheme(it) }
                             )
                         }
                         SettingsTab.INDEXERS -> {
@@ -360,7 +361,8 @@ fun SettingsScreen(
 fun AppearanceSettings(
     state: SettingsUiState,
     onThemeChange: (AppTheme) -> Unit,
-    onAccentChange: (AccentTheme) -> Unit
+    onAccentChange: (AccentTheme) -> Unit,
+    onAmoledChange: (Boolean) -> Unit
 ) {
     val primaryColor = MaterialTheme.colorScheme.primary
 
@@ -470,6 +472,39 @@ fun AppearanceSettings(
                     }
                 }
             }
+        }
+    }
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    SettingsCard(title = "AMOLED Options") {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Pure Black Theme",
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Text(
+                    text = "Uses true black for AMOLED/OLED screens in dark mode.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Switch(
+                checked = state.amoledTheme,
+                onCheckedChange = onAmoledChange,
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = primaryColor,
+                    checkedTrackColor = MaterialTheme.colorScheme.secondary
+                )
+            )
         }
     }
 }

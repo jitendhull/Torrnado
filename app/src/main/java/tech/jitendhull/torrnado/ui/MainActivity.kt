@@ -26,7 +26,8 @@ class MainActivity : ComponentActivity() {
             val settingsState by settingsViewModel.uiState.collectAsState()
             TorrnadoTheme(
                 appTheme = settingsState.appTheme,
-                accentTheme = settingsState.accentTheme
+                accentTheme = settingsState.accentTheme,
+                amoledTheme = settingsState.amoledTheme
             ) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),

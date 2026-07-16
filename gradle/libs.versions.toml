@@ -1,5 +1,6 @@
 [versions]
 agp = "8.13.2"
+materialKolor = "2.0.0"
 kotlin = "2.1.0"
 coreKtx = "1.15.0"
 lifecycleRuntimeKtx = "2.8.7"
@@ -50,6 +51,9 @@ datastore-preferences = { group = "androidx.datastore", name = "datastore-prefer
 
 # Testing
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+
+# Material Kolor
+material-kolor = { group = "com.materialkolor", name = "material-kolor", version.ref = "materialKolor" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

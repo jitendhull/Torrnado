@@ -37,6 +37,7 @@ class SettingsManager @Inject constructor(
         
         private val KEY_APP_THEME = stringPreferencesKey("app_theme")
         private val KEY_ACCENT_THEME = stringPreferencesKey("accent_theme")
+        private val KEY_AMOLED_THEME = booleanPreferencesKey("amoled_theme")
     }
 
     // Dynamic key generation for category indexers
@@ -105,6 +106,8 @@ class SettingsManager @Inject constructor(
         try { AccentTheme.valueOf(value) } catch (e: Exception) { AccentTheme.CYBERPUNK }
     }
 
+    val amoledTheme: Flow<Boolean> = dataStore.data.map { it[KEY_AMOLED_THEME] ?: false }
+
     suspend fun saveProxySettings(
         enabled: Boolean,
         host: String,
@@ -129,5 +132,9 @@ class SettingsManager @Inject constructor(
 
     suspend fun saveAccentTheme(accent: AccentTheme) {
         dataStore.edit { it[KEY_ACCENT_THEME] = accent.name }
+    }
+
+    suspend fun saveAmoledTheme(enabled: Boolean) {
+        dataStore.edit { it[KEY_AMOLED_THEME] = enabled }
     }
 }
