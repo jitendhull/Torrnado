@@ -40,3 +40,9 @@ Thumbs.db
 .externalNativeBuild/
 .cxx/
 crashlytics-build.properties
+
+# Keystore files and local properties
+keystore.properties
+*.keystore
+*.jks
+jitendhull
