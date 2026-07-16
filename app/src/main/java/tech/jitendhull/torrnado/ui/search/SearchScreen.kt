@@ -10,6 +10,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
@@ -70,7 +72,9 @@ fun SearchScreen(
     val query by viewModel.query.collectAsState()
     val category by viewModel.category.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
+    val recentQueries by viewModel.recentQueries.collectAsState()
     var isGridView by rememberSaveable { mutableStateOf(false) }
+    var active by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -92,62 +96,89 @@ fun SearchScreen(
                 )
         ) {
             // App Header
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 16.dp)
+            AnimatedVisibility(
+                visible = !active,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
             ) {
-                Column {
-                    Text(
-                        text = "TORRNADO",
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            fontWeight = FontWeight.Black,
-                            fontFamily = FontFamily.Monospace,
-                            letterSpacing = 4.sp,
-                            color = MaterialTheme.colorScheme.primary
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 16.dp)
+                ) {
+                    Column {
+                        Text(
+                            text = "TORRNADO",
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                fontWeight = FontWeight.Black,
+                                fontFamily = FontFamily.Monospace,
+                                letterSpacing = 4.sp,
+                                color = MaterialTheme.colorScheme.primary
+                            )
                         )
-                    )
-                    Text(
-                        text = "Developer: Jiten Dhull",
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            letterSpacing = 1.sp
+                        Text(
+                            text = "Developer: Jiten Dhull",
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                letterSpacing = 1.sp
+                            )
                         )
-                    )
+                    }
                 }
             }
 
-            // Premium Animated Search Bar with Gradient Border
+            // Material 3 Search Bar with rounded corners, proper animations and search history
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                    .background(
-                        Brush.horizontalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-                                MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)
-                            )
-                        ),
-                        shape = RoundedCornerShape(16.dp)
+                    .padding(
+                        horizontal = if (active) 0.dp else 16.dp,
+                        vertical = if (active) 0.dp else 8.dp
                     )
-                    .border(
-                        BorderStroke(
-                            width = 1.5.dp,
-                            brush = Brush.horizontalGradient(
-                                colors = listOf(
-                                    MaterialTheme.colorScheme.primary,
-                                    MaterialTheme.colorScheme.secondary
+                    .then(
+                        if (!active) {
+                            Modifier
+                                .background(
+                                    Brush.horizontalGradient(
+                                        colors = listOf(
+                                            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                                            MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)
+                                        )
+                                    ),
+                                    shape = SearchBarDefaults.inputFieldShape
                                 )
-                            )
-                        ),
-                        shape = RoundedCornerShape(16.dp)
+                                .border(
+                                    BorderStroke(
+                                        width = 1.5.dp,
+                                        brush = Brush.horizontalGradient(
+                                            colors = listOf(
+                                                MaterialTheme.colorScheme.primary,
+                                                MaterialTheme.colorScheme.secondary
+                                            )
+                                        )
+                                    ),
+                                    shape = SearchBarDefaults.inputFieldShape
+                                )
+                        } else {
+                            Modifier
+                        }
                     )
             ) {
-                TextField(
-                    value = query,
-                    onValueChange = { viewModel.updateQuery(it) },
-                    modifier = Modifier.fillMaxWidth(),
+                SearchBar(
+                    query = query,
+                    onQueryChange = { viewModel.updateQuery(it) },
+                    onSearch = {
+                        viewModel.search()
+                        active = false
+                        focusManager.clearFocus()
+                    },
+                    active = active,
+                    onActiveChange = { 
+                        active = it 
+                        if (!it) {
+                            focusManager.clearFocus()
+                        }
+                    },
                     placeholder = {
                         Text(
                             "Search torrents...",
@@ -162,36 +193,138 @@ fun SearchScreen(
                         )
                     },
                     trailingIcon = {
-                        if (query.isNotEmpty()) {
-                            IconButton(onClick = { viewModel.updateQuery("") }) {
+                        if (active) {
+                            IconButton(onClick = { active = false }) {
                                 Icon(
                                     imageVector = Icons.Default.Close,
+                                    contentDescription = "Close search",
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                        } else if (query.isNotEmpty()) {
+                            IconButton(onClick = { viewModel.updateQuery("") }) {
+                                Icon(
+                                    imageVector = Icons.Default.Clear,
                                     contentDescription = "Clear",
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }
                     },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        focusedTextColor = MaterialTheme.colorScheme.onBackground,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+                    colors = SearchBarDefaults.colors(
+                        containerColor = if (active) MaterialTheme.colorScheme.surface else Color.Transparent,
                     ),
-                    shape = RoundedCornerShape(16.dp),
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                    keyboardActions = KeyboardActions(
-                        onSearch = {
-                            viewModel.search()
-                            focusManager.clearFocus()
+                    shape = SearchBarDefaults.inputFieldShape,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        if (query.isNotEmpty()) {
+                            item {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            viewModel.search()
+                                            active = false
+                                            focusManager.clearFocus()
+                                        }
+                                        .padding(vertical = 12.dp, horizontal = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.ArrowForward,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(16.dp))
+                                    Text(
+                                        text = "Search for \"$query\"",
+                                        style = MaterialTheme.typography.bodyMedium.copy(
+                                            color = MaterialTheme.colorScheme.primary,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    )
+                                }
+                                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                            }
                         }
-                    )
-                )
+
+                        if (recentQueries.isNotEmpty()) {
+                            item {
+                                Text(
+                                    text = "Recent Searches",
+                                    style = MaterialTheme.typography.labelMedium.copy(
+                                        color = MaterialTheme.colorScheme.primary,
+                                        fontWeight = FontWeight.Bold
+                                    ),
+                                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp)
+                                )
+                            }
+
+                            items(recentQueries) { recent ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            viewModel.updateQuery(recent)
+                                            viewModel.search()
+                                            active = false
+                                            focusManager.clearFocus()
+                                        }
+                                        .padding(vertical = 8.dp, horizontal = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Icon(
+                                            imageVector = Icons.Default.Refresh,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(16.dp))
+                                        Text(
+                                            text = recent,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurface
+                                        )
+                                    }
+                                    IconButton(
+                                        onClick = { viewModel.removeRecentQuery(recent) },
+                                        modifier = Modifier.size(24.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Close,
+                                            contentDescription = "Delete history",
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        } else {
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 32.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "No recent searches",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 

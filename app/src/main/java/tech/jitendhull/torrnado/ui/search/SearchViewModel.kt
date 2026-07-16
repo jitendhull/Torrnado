@@ -33,6 +33,11 @@ class SearchViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<SearchUiState>(SearchUiState.Idle)
     val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
 
+    private val _recentQueries = MutableStateFlow<List<String>>(
+        listOf("Ubuntu", "Debian", "Blender", "Linux Mint", "Arch Linux")
+    )
+    val recentQueries: StateFlow<List<String>> = _recentQueries.asStateFlow()
+
     fun updateQuery(newQuery: String) {
         _query.value = newQuery
     }
@@ -45,10 +50,27 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    fun addRecentQuery(q: String) {
+        if (q.isBlank()) return
+        val currentList = _recentQueries.value.toMutableList()
+        currentList.remove(q)
+        currentList.add(0, q)
+        if (currentList.size > 8) {
+            currentList.removeAt(currentList.lastIndex)
+        }
+        _recentQueries.value = currentList
+    }
+
+    fun removeRecentQuery(q: String) {
+        _recentQueries.value = _recentQueries.value.filter { it != q }
+    }
+
     fun search() {
         val currentQuery = _query.value
         val currentCategory = _category.value
         if (currentQuery.isBlank()) return
+
+        addRecentQuery(currentQuery)
 
         viewModelScope.launch {
             _uiState.value = SearchUiState.Loading
