@@ -21,6 +21,19 @@ enum class IndexerType(val displayName: String) {
     JACKETT("Jackett")
 }
 
+enum class AppTheme(val displayName: String) {
+    SYSTEM("System Default"),
+    LIGHT("Light Mode"),
+    DARK("Dark Mode")
+}
+
+enum class AccentTheme(val displayName: String) {
+    CYBERPUNK("Cyberpunk (Cyan/Violet)"),
+    OCEAN("Ocean Breeze (Teal/Blue)"),
+    FOREST("Emerald Mint (Green/Teal)"),
+    SUNSET("Amber Sunset (Orange/Rose)")
+}
+
 data class TorrentItem(
     val title: String,
     val magnetUrl: String,

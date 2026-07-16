@@ -11,6 +11,8 @@ import kotlinx.coroutines.launch
 import tech.jitendhull.torrnado.data.settings.SettingsManager
 import tech.jitendhull.torrnado.domain.model.IndexerType
 import tech.jitendhull.torrnado.domain.model.TorrentCategory
+import tech.jitendhull.torrnado.domain.model.AppTheme
+import tech.jitendhull.torrnado.domain.model.AccentTheme
 import javax.inject.Inject
 
 data class SettingsUiState(
@@ -30,7 +32,9 @@ data class SettingsUiState(
     val musicIndexer: IndexerType = IndexerType.AUTO,
     val gameIndexer: IndexerType = IndexerType.AUTO,
     val bookIndexer: IndexerType = IndexerType.AUTO,
-    val generalIndexer: IndexerType = IndexerType.AUTO
+    val generalIndexer: IndexerType = IndexerType.AUTO,
+    val appTheme: AppTheme = AppTheme.SYSTEM,
+    val accentTheme: AccentTheme = AccentTheme.CYBERPUNK
 )
 
 @HiltViewModel
@@ -38,7 +42,7 @@ class SettingsViewModel @Inject constructor(
     private val settingsManager: SettingsManager
 ) : ViewModel() {
 
-    val uiState: StateFlow<SettingsUiState> = combine(
+    val uiState: StateFlow<SettingsUiState> = combine<Any, SettingsUiState>(
         settingsManager.prowlarrUrl, settingsManager.prowlarrKey,
         settingsManager.jackettUrl, settingsManager.jackettKey,
         settingsManager.proxyEnabled, settingsManager.proxyType,
@@ -47,7 +51,8 @@ class SettingsViewModel @Inject constructor(
         settingsManager.movieIndexer, settingsManager.showIndexer,
         settingsManager.animeIndexer, settingsManager.musicIndexer,
         settingsManager.gameIndexer, settingsManager.bookIndexer,
-        settingsManager.generalIndexer
+        settingsManager.generalIndexer,
+        settingsManager.appTheme, settingsManager.accentTheme
     ) { args ->
         SettingsUiState(
             prowlarrUrl = args[0] as String,
@@ -66,7 +71,9 @@ class SettingsViewModel @Inject constructor(
             musicIndexer = args[13] as IndexerType,
             gameIndexer = args[14] as IndexerType,
             bookIndexer = args[15] as IndexerType,
-            generalIndexer = args[16] as IndexerType
+            generalIndexer = args[16] as IndexerType,
+            appTheme = args[17] as AppTheme,
+            accentTheme = args[18] as AccentTheme
         )
     }.stateIn(
         scope = viewModelScope,
@@ -95,6 +102,18 @@ class SettingsViewModel @Inject constructor(
     fun updateIndexer(category: TorrentCategory, indexer: IndexerType) {
         viewModelScope.launch {
             settingsManager.setIndexerForCategory(category, indexer)
+        }
+    }
+
+    fun updateAppTheme(theme: AppTheme) {
+        viewModelScope.launch {
+            settingsManager.saveAppTheme(theme)
+        }
+    }
+
+    fun updateAccentTheme(accent: AccentTheme) {
+        viewModelScope.launch {
+            settingsManager.saveAccentTheme(accent)
         }
     }
 }

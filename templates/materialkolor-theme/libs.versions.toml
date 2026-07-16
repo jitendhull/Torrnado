@@ -1,0 +1,5 @@
+[versions]
+materialKolor = "5.0.0"
+
+[libraries]
+materialKolor = "com.materialkolor:material-kolor:5.0.0"

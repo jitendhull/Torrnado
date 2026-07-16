@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import tech.jitendhull.torrnado.domain.model.IndexerType
 import tech.jitendhull.torrnado.domain.model.TorrentCategory
+import tech.jitendhull.torrnado.domain.model.AppTheme
+import tech.jitendhull.torrnado.domain.model.AccentTheme
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -32,6 +34,9 @@ class SettingsManager @Inject constructor(
         private val KEY_PROXY_TYPE = stringPreferencesKey("proxy_type")
         private val KEY_PROXY_USER = stringPreferencesKey("proxy_user")
         private val KEY_PROXY_PASS = stringPreferencesKey("proxy_pass")
+        
+        private val KEY_APP_THEME = stringPreferencesKey("app_theme")
+        private val KEY_ACCENT_THEME = stringPreferencesKey("accent_theme")
     }
 
     // Dynamic key generation for category indexers
@@ -90,6 +95,16 @@ class SettingsManager @Inject constructor(
     val proxyUser: Flow<String> = dataStore.data.map { it[KEY_PROXY_USER] ?: "" }
     val proxyPass: Flow<String> = dataStore.data.map { it[KEY_PROXY_PASS] ?: "" }
 
+    val appTheme: Flow<AppTheme> = dataStore.data.map { preferences ->
+        val value = preferences[KEY_APP_THEME] ?: AppTheme.SYSTEM.name
+        try { AppTheme.valueOf(value) } catch (e: Exception) { AppTheme.SYSTEM }
+    }
+
+    val accentTheme: Flow<AccentTheme> = dataStore.data.map { preferences ->
+        val value = preferences[KEY_ACCENT_THEME] ?: AccentTheme.CYBERPUNK.name
+        try { AccentTheme.valueOf(value) } catch (e: Exception) { AccentTheme.CYBERPUNK }
+    }
+
     suspend fun saveProxySettings(
         enabled: Boolean,
         host: String,
@@ -106,5 +121,13 @@ class SettingsManager @Inject constructor(
             it[KEY_PROXY_USER] = user
             it[KEY_PROXY_PASS] = pass
         }
+    }
+
+    suspend fun saveAppTheme(theme: AppTheme) {
+        dataStore.edit { it[KEY_APP_THEME] = theme.name }
+    }
+
+    suspend fun saveAccentTheme(accent: AccentTheme) {
+        dataStore.edit { it[KEY_ACCENT_THEME] = accent.name }
     }
 }
