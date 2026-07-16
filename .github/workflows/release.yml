@@ -46,30 +46,9 @@ jobs:
           fi
           ./gradlew assembleRelease --no-daemon
 
-      - name: Set Release Tag
-        id: release_tag
-        shell: bash
-        run: |
-          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
-            TAG_NAME="${{ github.ref_name }}"
-          else
-            DATE=$(date +'%Y.%m.%d')
-            TAG_NAME="v${DATE}-${{ github.run_number }}"
-          fi
-          echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
-
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: torrnado-release-apk
           path: app/build/outputs/apk/release/*.apk
           retention-days: 7
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.release_tag.outputs.tag }}
-          files: app/build/outputs/apk/release/*.apk
-          generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
