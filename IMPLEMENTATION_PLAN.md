@@ -55,9 +55,9 @@
 ## Implementation Plan — 6 Phases
 
 ### Phase 1: Project Skeleton (Day 1)
-- [ ] Android project init with Gradle version catalogs (`libs.versions.toml`)
-- [ ] Configure: Kotlin 2.0+, Compose BOM, Hilt, Room, Retrofit, OkHttp, Jsoup, DataStore
-- [ ] Package structure:
+- [x] Android project init with Gradle version catalogs (`libs.versions.toml`)
+- [x] Configure: Kotlin 2.0+, Compose BOM, Hilt, Room, Retrofit, OkHttp, Jsoup, DataStore
+- [x] Package structure:
   ```
   com.torrentvault
   ├── data/          # Room, Retrofit, DataStore, repositories
@@ -65,7 +65,7 @@
   ├── di/            # Hilt modules
   └── ui/            # Compose screens, theme, navigation
   ```
-- [ ] Base theme: dark palette (`#0F172A` bg, `#00F0FF` primary, `#8B5CF6` secondary), Inter font
+- [ ] Base theme: dark palette (`#0F172A` bg, `#00F0FF` primary, `#8B5CF6` secondary), Inter font (Stopped for Stich import)
 
 ### Phase 2: Network + Proxy Engine (Day 2-3)
 - [ ] `ProxyPreferences` DataStore — host, port, type (HTTP/SOCKS5), credentials, enabled flag
